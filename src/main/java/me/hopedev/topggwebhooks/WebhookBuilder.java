@@ -5,7 +5,7 @@ public class WebhookBuilder {
 
     private int port = 6969;
     private String context = "dblwebhook";
-    private String authorization;
+    private String authorization = null;
     private WebhookListener listener;
 
     public WebhookBuilder(WebhookListener listener) {
