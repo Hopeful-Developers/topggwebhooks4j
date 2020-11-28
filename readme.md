@@ -15,7 +15,7 @@ maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-implementation 'com.github.Hopefuls:topggwebhooks4j:Tag'
+implementation 'com.github.Hopefuls:topggwebhooks4j:1.0.0'
 }
 
 ```
@@ -31,6 +31,6 @@ implementation 'com.github.Hopefuls:topggwebhooks4j:Tag'
 	<dependency>
 	    <groupId>com.github.Hopefuls</groupId>
 	    <artifactId>topggwebhooks4j</artifactId>
-	    <version>Tag</version>
+	    <version>1.0.0</version>
 	</dependency>
 ```
