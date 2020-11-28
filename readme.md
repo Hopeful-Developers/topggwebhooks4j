@@ -3,7 +3,7 @@
 
 This is a Library for creating Webhooks in Java
 
-
+**[How to use (Wiki)](https://github.com/Hopefuls/topggwebhooks4j/wiki)**
 ## Quick-Start
 
 
