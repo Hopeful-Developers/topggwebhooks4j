@@ -14,6 +14,7 @@ public class VoteData {
 
     /**
      * Constructor for the VoteData
+     *
      * @param data parsed JSON
      */
     public VoteData(JSONObject data) {
@@ -26,6 +27,7 @@ public class VoteData {
 
     /**
      * gets the User ID of the current vote
+     *
      * @return Long containing the UserID of the voter
      */
     public Long getUserID() {
@@ -34,6 +36,7 @@ public class VoteData {
 
     /**
      * gets the ID of the Bot that was voted for
+     *
      * @return Long containing the ID of the voted bot
      */
     public Long getBotID() {
@@ -42,6 +45,7 @@ public class VoteData {
 
     /**
      * gets the type of vote that occured
+     *
      * @return String containing either "upvote" when it was a normal vote, "test" when it was a test vote
      */
     public String getType() {
@@ -50,6 +54,7 @@ public class VoteData {
 
     /**
      * checks if it is the weekend
+     *
      * @return Boolean returning if it's the weekend
      */
     public boolean isWeekend() {
@@ -59,6 +64,7 @@ public class VoteData {
     /**
      * gets the query of the vote page that was associated with the vote
      * Read the <a href="https://top.gg/api/docs#webhooks">top.gg api documentation</a> for more
+     *
      * @return String containing the query
      */
     public String getQuery() {

@@ -5,8 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import me.hopedev.topggwebhooks.utils.RequestManager;
 import me.hopedev.topggwebhooks.utils.ResponseManager;
 
-import java.io.IOException;
-
 public class RequestHandler implements HttpHandler {
 
     private final WebhookListener listener;

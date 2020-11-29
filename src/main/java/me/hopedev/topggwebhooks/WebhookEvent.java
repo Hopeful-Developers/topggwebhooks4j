@@ -12,10 +12,11 @@ public class WebhookEvent {
 
     /**
      * Main constructor for the Webhook Event
-     * @param requestString the full request body of the webhook
+     *
+     * @param requestString        the full request body of the webhook
      * @param currentAuthorization authorization of the current webhook request
-     * @param listener involved Webhook Handler
-     * @param globalAuthorization global authorization of that Webhook instance
+     * @param listener             involved Webhook Handler
+     * @param globalAuthorization  global authorization of that Webhook instance
      */
     public WebhookEvent(String requestString, String currentAuthorization, WebhookListener listener, String globalAuthorization) {
         this.currentAuthorization = currentAuthorization;
@@ -34,6 +35,7 @@ public class WebhookEvent {
 
     /**
      * gets the full request body from the WebhookEvent
+     *
      * @return String containing the full request body
      */
     public final String getRequestString() {
@@ -42,6 +44,7 @@ public class WebhookEvent {
 
     /**
      * gets the VoteData Object that is involved into the current WebhookEvent
+     *
      * @return VoteData Object containing the vote data from the current WebhookEvent
      */
     public final VoteData getVote() {
@@ -50,6 +53,7 @@ public class WebhookEvent {
 
     /**
      * gets the Authorization from the WebhookEvent Request
+     *
      * @return String containing the Authorization
      */
     public final String getAuthorization() {
@@ -58,21 +62,23 @@ public class WebhookEvent {
 
     /**
      * gets the listener instance
+     *
      * @return WebhookListener instance
      */
 
     public final WebhookListener getListener() {
         return this.listener;
     }
+
     /**
      * checks if the current Request is authorized if the Authorization
      * of the current Request matches with the Authorization bound to this WebhookEvent
+     *
      * @return Boolean if the Authorization matches
      */
     public final boolean isAuthorized() {
         return this.globalAuthorization.equals(this.currentAuthorization);
     }
-
 
 
 }

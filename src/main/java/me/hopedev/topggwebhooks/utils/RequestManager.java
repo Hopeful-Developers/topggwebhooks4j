@@ -3,7 +3,9 @@ package me.hopedev.topggwebhooks.utils;
 import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ public class RequestManager {
 
     public final String parseToString() {
         StringBuilder sb = new StringBuilder();
-        InputStreamReader isr =  new InputStreamReader(this.getRequestStream(), StandardCharsets.UTF_8);
+        InputStreamReader isr = new InputStreamReader(this.getRequestStream(), StandardCharsets.UTF_8);
         BufferedReader br = new BufferedReader(isr);
         br.lines().forEach(sb::append);
         return sb.toString();
