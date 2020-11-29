@@ -1,9 +1,10 @@
 # Top.gg Vote Webhook Library - Java
-
+[![](https://jitpack.io/v/Hopefuls/topggwebhooks4j.svg)](https://jitpack.io/#Hopefuls/topggwebhooks4j)
 
 This is a Library for creating Webhooks in Java
 
 **[How to use (Wiki)](https://github.com/Hopefuls/topggwebhooks4j/wiki)**
+
 ## Quick-Start
 
 
@@ -14,7 +15,7 @@ maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-implementation 'com.github.Hopefuls:topggwebhooks4j:Tag'
+implementation 'com.github.Hopefuls:topggwebhooks4j:1.0.0'
 }
 
 ```
@@ -30,6 +31,6 @@ implementation 'com.github.Hopefuls:topggwebhooks4j:Tag'
 	<dependency>
 	    <groupId>com.github.Hopefuls</groupId>
 	    <artifactId>topggwebhooks4j</artifactId>
-	    <version>Tag</version>
+	    <version>1.0.0</version>
 	</dependency>
 ```
