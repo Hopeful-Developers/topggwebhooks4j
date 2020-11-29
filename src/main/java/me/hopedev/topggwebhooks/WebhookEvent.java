@@ -57,7 +57,7 @@ public class WebhookEvent {
      * @return String containing the Authorization
      */
     public final String getAuthorization() {
-        return this.currentAuthorization;
+        return this.currentAuthorization == null ? "empty" : this.currentAuthorization;
     }
 
     /**
@@ -77,7 +77,12 @@ public class WebhookEvent {
      * @return Boolean if the Authorization matches
      */
     public final boolean isAuthorized() {
-        return this.globalAuthorization.equals(this.currentAuthorization);
+        if (this.globalAuthorization == null) {
+            return true;
+        } else {
+            return this.globalAuthorization.equals(this.currentAuthorization);
+
+        }
     }
 
 

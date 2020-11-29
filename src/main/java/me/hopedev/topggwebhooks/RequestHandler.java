@@ -20,8 +20,12 @@ public class RequestHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) {
         RequestManager reqManager = new RequestManager(httpExchange);
         ResponseManager manager = new ResponseManager(httpExchange);
-        String authorization = httpExchange.getRequestHeaders().getFirst("authorization");
-
+        String authorization;
+        try {
+            authorization = httpExchange.getRequestHeaders().getFirst("authorization");
+        } catch (Exception e) {
+            authorization = null;
+        }
         WebhookEvent event = new WebhookEvent(reqManager.parseToString(), authorization, this.listener, this.authorization);
 
         this.listener.onWebhookRequest(event);
