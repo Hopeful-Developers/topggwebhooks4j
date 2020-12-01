@@ -8,7 +8,7 @@ public class WebhookEvent {
     private final String currentAuthorization;
     private final WebhookListener listener;
     private final String globalAuthorization;
-
+    private boolean isValid;
 
     /**
      * Main constructor for the Webhook Event
@@ -25,8 +25,19 @@ public class WebhookEvent {
         this.listener = listener;
         try {
             JSONObject object = new JSONObject(requestString);
+
+            /*Dummy data to see if it's valid, will cause an exception when
+             * The data is missing one point.
+             */
             object.isEmpty();
+            object.getLong("bot");
+            object.getLong("user");
+            object.getString("type");
+            object.getBoolean("isWeekend");
+            object.getString("?query");
+            this.isValid = true;
         } catch (Exception e) {
+            this.isValid = false;
             System.out.println("Invalid Request Data");
             System.out.println(requestString);
             System.out.println("This will cause errors if trying to parse.");
@@ -83,6 +94,15 @@ public class WebhookEvent {
             return this.globalAuthorization.equals(this.currentAuthorization);
 
         }
+    }
+
+    /**
+     * Checks if the Request Data is valid and matches the Data documented on the <a href="https://top.gg/api/docs#webhooks">top.gg api documentation</a>
+     *
+     * @return Boolean if the Request Data is valid and matches the documentation
+     */
+    public final boolean isValid() {
+        return this.isValid;
     }
 
 
