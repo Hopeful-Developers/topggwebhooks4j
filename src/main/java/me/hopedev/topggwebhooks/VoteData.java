@@ -22,7 +22,7 @@ public class VoteData {
         this.botID = data.getLong("bot");
         this.type = data.getString("type");
         this.isWeekend = data.getBoolean("isWeekend");
-        this.query = data.getString("query?");
+        this.query = data.getString("query");
     }
 
     /**
