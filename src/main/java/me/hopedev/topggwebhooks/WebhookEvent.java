@@ -34,7 +34,7 @@ public class WebhookEvent {
             object.getLong("user");
             object.getString("type");
             object.getBoolean("isWeekend");
-            object.getString("?query");
+            object.getString("query");
             this.isValid = true;
         } catch (Exception e) {
             this.isValid = false;
