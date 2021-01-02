@@ -1,28 +1,19 @@
-package me.hopedev.topggwebhooks;
+package me.hopedev.topggwebhooks.bots;
 
 import org.json.JSONObject;
 
-public class VoteData {
+public class BotVoteData {
 
 
-    private final Long userID;
-    private final Long botID;
-    private final String type;
-    private final boolean isWeekend;
-    private final String query;
-
+    private final JSONObject data;
 
     /**
-     * Constructor for the VoteData
+     * Constructor for the BotVoteData
      *
      * @param data parsed JSON
      */
-    public VoteData(JSONObject data) {
-        this.userID = data.getLong("user");
-        this.botID = data.getLong("bot");
-        this.type = data.getString("type");
-        this.isWeekend = data.getBoolean("isWeekend");
-        this.query = data.getString("query");
+    public BotVoteData(JSONObject data) {
+        this.data = data;
     }
 
     /**
@@ -31,7 +22,7 @@ public class VoteData {
      * @return Long containing the UserID of the voter
      */
     public Long getUserID() {
-        return this.userID;
+        return this.data.getLong("user");
     }
 
     /**
@@ -40,16 +31,16 @@ public class VoteData {
      * @return Long containing the ID of the voted bot
      */
     public Long getBotID() {
-        return this.botID;
+        return this.data.getLong("bot");
     }
 
     /**
      * gets the type of vote that occured
      *
-     * @return String containing either "upvote" when it was a normal vote, "test" when it was a test vote
+     * @return String containing either "upvote" when it was a normal vote, "test" when it was a test vote through the "Test Webhook" button
      */
     public String getType() {
-        return this.type;
+        return this.data.getString("type");
     }
 
     /**
@@ -58,7 +49,7 @@ public class VoteData {
      * @return Boolean returning if it's the weekend
      */
     public boolean isWeekend() {
-        return this.isWeekend;
+        return this.data.getBoolean("isWeekend");
     }
 
     /**
@@ -68,6 +59,6 @@ public class VoteData {
      * @return String containing the query
      */
     public String getQuery() {
-        return this.query;
+        return this.data.getString("query");
     }
 }

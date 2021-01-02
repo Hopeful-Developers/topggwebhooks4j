@@ -4,28 +4,26 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 
 public class Webhook {
 
 
-    public static boolean started = false;
-    public final String authorization;
     private final int port;
-    private final WebhookListener listener;
-    private final String context;
     private HttpServer server;
+    private final ArrayList<ContextPack> contextPacks;
+    private final boolean debug;
 
     /**
-     * @param port             Webhook Port
-     * @param context          Webhook Context
-     * @param authorizationKey Webhook Authorization
-     * @param listener         Webhook Handler class
+     * @param debug        Debugging
+     * @param port         Webhook Port
+     * @param contextPacks ContentPack ArrayList for Event Listeners
      */
-    public Webhook(int port, String context, String authorizationKey, WebhookListener listener) {
+    public Webhook(boolean debug, int port, ArrayList<ContextPack> contextPacks) {
+        this.debug = debug;
         this.port = port;
-        this.context = context;
-        authorization = authorizationKey;
-        this.listener = listener;
+
+        this.contextPacks = contextPacks;
     }
 
 
@@ -38,32 +36,26 @@ public class Webhook {
     public final Webhook start() throws IOException {
 
         server = HttpServer.create(new InetSocketAddress(this.port), 0);
-        server.createContext("/" + this.context, new RequestHandler(this.listener, this.authorization));
-        server.setExecutor(null); // creates a default executor
+        if (this.isDebug()) {
+            System.out.println("[DEBUG] Starting Webserver");
+        }
+        contextPacks.forEach(contextPack -> {
+            ListenerPack pack = contextPack.getListenerPack();
+            server.createContext("/" + contextPack.getContext(), new RequestHandler(this, pack, contextPack));
+            if (this.isDebug()) {
+                System.out.println("[DEBUG] Added /" + contextPack.getContext());
+            }
+        });
+
+        System.out.println("Webhook started under " + server.getAddress().getHostString() + " on port " + server.getAddress().getPort() + " under the following context | listeners | authorization");
+        contextPacks.forEach(contextPack -> {
+            ListenerPack listenerPack = contextPack.getListenerPack();
+            System.out.println("> " + contextPack.getContext() + " - " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
+
+        });
         server.start();
-        started = true;
-        System.out.println("Webhook started under " + server.getAddress().getAddress().getHostAddress() + ":" + server.getAddress().getPort() + "/" + this.context);
 
         return this;
-    }
-
-
-    /**
-     * get the Context from the current Webhook instance
-     *
-     * @return String containing the Context
-     */
-    public final String getContext() {
-        return this.context;
-    }
-
-    /**
-     * get the Authorization from the current Webhook instance
-     *
-     * @return String containing the Authorization
-     */
-    public final String getAuthorization() {
-        return authorization;
     }
 
     /**
@@ -75,4 +67,8 @@ public class Webhook {
         return this.port;
     }
 
+
+    public final boolean isDebug() {
+        return this.debug;
+    }
 }

@@ -1,22 +1,31 @@
 package me.hopedev.topggwebhooks;
 
 
+import me.hopedev.topggwebhooks.bots.BotWebhookListener;
+import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class WebhookBuilder {
 
     private int port = 6969;
-    private String context = "dblwebhook";
-    private String authorization = null;
-    private WebhookListener listener;
+    private final String context = "dblwebhook";
+    private final String authorization = null;
+    private final HashMap<String /*url context*/, ListenerPack /*ListenerPack*/> listenerStorage = new HashMap<>();
+    private BotWebhookListener listener;
+    private boolean debug = false;
 
 
     /**
-     * Gets the constructor for the WebhookBuilder
-     *
-     * @param listener Class for handling the Webhook Requests
+     * Constructor
      */
 
-    public WebhookBuilder(WebhookListener listener) {
-        this.listener = listener;
+    public WebhookBuilder() {
+    }
+
+    public WebhookBuilder(boolean debug) {
+        this.debug = true;
     }
 
     /**
@@ -30,37 +39,16 @@ public class WebhookBuilder {
         return this;
     }
 
-    /**
-     * @param context the Context of the Webhook
-     *                Example: http://example.com:6969/<b>dblwebhook</b>
-     *                Default: <b>dblwebhook</b>
-     * @return the current WebhookBuilder instance
-     */
-    public final WebhookBuilder setContext(String context) {
-        this.context = context;
+    public final WebhookBuilder addListener(String context, GuildWebhookListener listener, String httpAuthorization) {
+        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization));
         return this;
     }
 
-    /**
-     * @param authorization the Authorization that identifies top.gg on your webhook
-     *                      Web requests to your Webhoook must include these. If empty, they won't be respected.
-     *                      Default: null
-     * @return the current WebhookBuilder instance
-     */
-    public final WebhookBuilder setAuthorization(String authorization) {
-        this.authorization = authorization;
+    public final WebhookBuilder addListener(String context, BotWebhookListener listener, String httpAuthorization) {
+        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization));
         return this;
     }
 
-    /**
-     * @param listener the Listener class that is going to handle the Webhook Requests
-     * @return the current WebhookBuilder instance
-     * @deprecated
-     */
-    public final WebhookBuilder setListener(WebhookListener listener) {
-        this.listener = listener;
-        return this;
-    }
 
     /**
      * Method to build the finished Webhook
@@ -68,7 +56,9 @@ public class WebhookBuilder {
      * @return the built Webhook
      */
     public final Webhook build() {
-        return new Webhook(this.port, this.context, this.authorization, this.listener);
+        ArrayList<ContextPack> packs = new ArrayList<>();
+        listenerStorage.forEach((s, o) -> packs.add(new ContextPack(s, o)));
+        return new Webhook(this.debug, this.port, packs);
     }
 
 }
