@@ -4,77 +4,170 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import me.hopedev.topggwebhooks.bots.BotWebhookEvent;
 import me.hopedev.topggwebhooks.bots.BotWebhookListener;
+import me.hopedev.topggwebhooks.enums.Options;
+import me.hopedev.topggwebhooks.enums.VotingType;
 import me.hopedev.topggwebhooks.servers.GuildWebhookEvent;
 import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
 import me.hopedev.topggwebhooks.utils.RequestManager;
 import me.hopedev.topggwebhooks.utils.ResponseManager;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class RequestHandler implements HttpHandler {
 
-    private final Object listenerObject;
-    private final String contextAuthorization;
-    private final Webhook webhookInstance;
-    private final boolean debug;
     private final ListenerPack listenerPack;
-    private final ContextPack contextPack;
 
-    public RequestHandler(Webhook webhook, ListenerPack listenerPack, ContextPack contextPack) {
-        this.webhookInstance = webhook;
+    public RequestHandler(ListenerPack listenerPack) {
         this.listenerPack = listenerPack;
-        this.contextPack = contextPack;
-        this.listenerObject = this.listenerPack.getListener();
-        this.contextAuthorization = this.listenerPack.getAuthorization();
-        this.debug = this.webhookInstance.isDebug();
     }
 
     @Override
     public void handle(HttpExchange httpExchange) {
-
-        RequestManager reqManager = new RequestManager(httpExchange);
-        ResponseManager manager = new ResponseManager(httpExchange);
-        String authorization;
+        List<Options> currOptions = null;
+        boolean validationDisabled = false;
         try {
-            authorization = httpExchange.getRequestHeaders().getFirst("Authorization");
-        } catch (Exception ignored) {
-            authorization = "empty";
-        }
-        if (this.listenerObject instanceof BotWebhookListener) {
-            BotWebhookListener listener = (BotWebhookListener) this.listenerObject;
 
-            if (this.debug) {
-                System.out.println("[DEBUG]");
-                System.out.println("WebhookType: GuildWebhook");
-                System.out.println("RequestData: " + reqManager.getString());
-                System.out.println("Context: " + this.contextPack.getContext());
-                System.out.println("Associated Listener: " + this.contextPack.getListenerPack().getListener());
-                System.out.println("Associated with Authorization: " + this.contextPack.getListenerPack().getAuthorization());
-                System.out.println("[DEBUG]");
+
+            RequestManager reqManager = new RequestManager(httpExchange);
+            ResponseManager resManager = new ResponseManager(httpExchange);
+            String dataString = reqManager.getString();
+
+            String authorization;
+            try {
+                authorization = httpExchange.getRequestHeaders().getFirst("Authorization");
+                if (authorization == null) {
+                    authorization = "none";
+                }
+            } catch (Exception ignored) {
+                authorization = "none";
             }
 
-            BotWebhookEvent event = new BotWebhookEvent(reqManager.getString(), listener, authorization, this.contextAuthorization);
+            // send earlier because everything needed was stored already
+            resManager.setResponseCode(200).writeResponse("Received! Thank you :)");
 
-            listener.onWebhookRequest(event);
-        } else if (this.listenerObject instanceof GuildWebhookListener) {
-            GuildWebhookListener listener = (GuildWebhookListener) this.listenerObject;
+            Object listenerObject = this.listenerPack.getListener();
 
-            if (this.debug) {
-                System.out.println("[DEBUG]");
-                System.out.println("WebhookType: GuildWebhook");
-                System.out.println("RequestData: " + reqManager.getString());
-                System.out.println("Context: " + this.contextPack.getContext());
-                System.out.println("Associated Listener: " + this.contextPack.getListenerPack().getListener());
-                System.out.println("Associated with Authorization: " + this.contextPack.getListenerPack().getAuthorization());
-                System.out.println("[DEBUG]");
+            if (listenerObject instanceof BotWebhookListener) {
+                BotWebhookListener listener = (BotWebhookListener) listenerObject;
+
+                BotWebhookEvent event = new BotWebhookEvent(dataString, listener, authorization, this.listenerPack.getAuthorization());
+
+                List<Options> optionsList = Arrays.asList(this.listenerPack.getOptions());
+
+                // Exception purposes
+                currOptions = optionsList;
+
+                // DEBUG System.out.println("auth? "+event.isAuthorized());
+                // DEBUG System.out.println("valid? "+event.isValid());
+
+                if (optionsList.contains(Options.ONLY_LISTEN_FOR_TEST_VOTES)) {
+                    if (!event.getVote().getType().equals(VotingType.TEST) && !event.getVote().getType().equals(VotingType.INVALID)) {
+                        return;
+                    }
+                }
+
+                //TODO please make this somewhat more efficient
+                if (event.isAuthorized() && event.isValid()) {
+                    listener.onWebhookRequest(event);
+                    return;
+                }
+
+                if (!event.isAuthorized()) {
+                    if (optionsList.contains(Options.IGNORE_AUTHORIZATION)) {
+                        if (!event.isValid()) {
+                            if (optionsList.contains(Options.IGNORE_VALIDATION)) {
+                                validationDisabled = true;
+                                listener.onWebhookRequest(event);
+                            }
+                        } else {
+                            listener.onWebhookRequest(event);
+                        }
+                        return;
+                    }
+                }
+
+                if (!event.isValid()) {
+                    if (optionsList.contains(Options.IGNORE_VALIDATION)) {
+                        validationDisabled = true;
+                        if (!event.isAuthorized()) {
+                            if (optionsList.contains(Options.IGNORE_AUTHORIZATION)) {
+                                listener.onWebhookRequest(event);
+                            }
+                        } else {
+                            listener.onWebhookRequest(event);
+                        }
+                    }
+                }
+
+
+            } else if (listenerObject instanceof GuildWebhookListener) {
+
+                GuildWebhookListener listener = (GuildWebhookListener) listenerObject;
+                GuildWebhookEvent event = new GuildWebhookEvent(dataString, listener, authorization, this.listenerPack.getAuthorization());
+
+                List<Options> optionsList = Arrays.asList(this.listenerPack.getOptions());
+
+                // Exception purposes
+                currOptions = optionsList;
+
+
+                if (optionsList.contains(Options.ONLY_LISTEN_FOR_TEST_VOTES)) {
+                    if (!event.getVote().getType().equals(VotingType.TEST) && !event.getVote().getType().equals(VotingType.INVALID)) {
+                        return;
+                    }
+                }
+
+                //TODO please make this somewhat more efficient
+                if (event.isAuthorized() && event.isValid()) {
+                    listener.onWebhookRequest(event);
+                    return;
+                }
+
+                if (!event.isAuthorized()) {
+                    if (optionsList.contains(Options.IGNORE_AUTHORIZATION)) {
+                        if (!event.isValid()) {
+                            if (optionsList.contains(Options.IGNORE_VALIDATION)) {
+                                validationDisabled = true;
+                                listener.onWebhookRequest(event);
+                            }
+                        } else {
+                            listener.onWebhookRequest(event);
+                        }
+                        return;
+                    }
+                }
+
+                if (!event.isValid()) {
+                    if (optionsList.contains(Options.IGNORE_VALIDATION)) {
+                        validationDisabled = true;
+                        if (!event.isAuthorized()) {
+                            if (optionsList.contains(Options.IGNORE_AUTHORIZATION)) {
+                                listener.onWebhookRequest(event);
+                            }
+                        } else {
+                            listener.onWebhookRequest(event);
+                        }
+                    }
+                }
+
+            } else {
+                System.out.println("Error handling Request");
             }
 
-            GuildWebhookEvent event = new GuildWebhookEvent((reqManager.getString()), listener, authorization, this.contextAuthorization);
+        } catch (Exception e) {
+            System.err.println("Error while handling request");
+            if (validationDisabled) {
+                System.err.println("Note: Validation was disabled through the Listener, check first before asking for help!");
+                System.err.println("Referring Option: IGNORE_VALIDATION");
+            }
+            System.err.print("Active Options: ");
 
-            listener.onWebhookRequest(event);
-        } else {
-            System.out.println("Error handling Request");
+            assert currOptions != null;
+            currOptions.forEach(options -> System.err.print(options.name() + ", "));
+            System.err.println();
+            e.printStackTrace();
+            // Debug Arrays.stream(e.getStackTrace()).iterator().forEachRemaining(traceElement -> System.err.println("at "+traceElement.getClassName() + " on line "+ traceElement.getLineNumber()+" by method "+traceElement.getMethodName()));
         }
-
-
-        manager.setResponseCode(200).writeResponse("Received! Thank you :)");
     }
 }

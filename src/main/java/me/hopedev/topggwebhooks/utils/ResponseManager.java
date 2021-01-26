@@ -29,8 +29,10 @@ public class ResponseManager {
     public final void writeResponse(String res) {
         try {
 
-            // send length
+            // mmlol
+            this.exchange.getResponseHeaders().set("xignotic-stinky", "true");
 
+            // send length
             this.exchange.sendResponseHeaders(this.responseCode, res.length());
 
             // send response

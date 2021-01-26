@@ -1,6 +1,7 @@
 package me.hopedev.topggwebhooks;
 
 import me.hopedev.topggwebhooks.bots.BotWebhookListener;
+import me.hopedev.topggwebhooks.enums.ListenerType;
 import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
 
 public class ContextPack {
@@ -32,9 +33,4 @@ public class ContextPack {
         }
     }
 
-    public enum ListenerType {
-        GUILD,
-        BOT,
-        UNKNOWN
-    }
 }

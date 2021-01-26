@@ -2,6 +2,7 @@ package me.hopedev.topggwebhooks;
 
 
 import me.hopedev.topggwebhooks.bots.BotWebhookListener;
+import me.hopedev.topggwebhooks.enums.Options;
 import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
 
 import java.util.ArrayList;
@@ -9,12 +10,8 @@ import java.util.HashMap;
 
 public class WebhookBuilder {
 
-    private int port = 6969;
-    private final String context = "dblwebhook";
-    private final String authorization = null;
     private final HashMap<String /*url context*/, ListenerPack /*ListenerPack*/> listenerStorage = new HashMap<>();
-    private BotWebhookListener listener;
-    private boolean debug = false;
+    private int port = 6969;
 
 
     /**
@@ -24,9 +21,6 @@ public class WebhookBuilder {
     public WebhookBuilder() {
     }
 
-    public WebhookBuilder(boolean debug) {
-        this.debug = true;
-    }
 
     /**
      * @param port sets the Port that is used for the Webhook
@@ -39,16 +33,15 @@ public class WebhookBuilder {
         return this;
     }
 
-    public final WebhookBuilder addListener(String context, GuildWebhookListener listener, String httpAuthorization) {
-        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization));
+    public final WebhookBuilder addGuildListener(String context, GuildWebhookListener listener, String httpAuthorization, Options... options) {
+        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization, options));
         return this;
     }
 
-    public final WebhookBuilder addListener(String context, BotWebhookListener listener, String httpAuthorization) {
-        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization));
+    public final WebhookBuilder addBotListener(String context, BotWebhookListener listener, String httpAuthorization, Options... options) {
+        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization, options));
         return this;
     }
-
 
     /**
      * Method to build the finished Webhook
@@ -58,7 +51,7 @@ public class WebhookBuilder {
     public final Webhook build() {
         ArrayList<ContextPack> packs = new ArrayList<>();
         listenerStorage.forEach((s, o) -> packs.add(new ContextPack(s, o)));
-        return new Webhook(this.debug, this.port, packs);
+        return new Webhook(this.port, packs);
     }
 
 }

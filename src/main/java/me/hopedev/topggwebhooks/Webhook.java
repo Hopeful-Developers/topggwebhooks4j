@@ -1,6 +1,8 @@
 package me.hopedev.topggwebhooks;
 
 import com.sun.net.httpserver.HttpServer;
+import me.hopedev.topggwebhooks.bots.BotWebhookListener;
+import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,19 +12,15 @@ public class Webhook {
 
 
     private final int port;
-    private HttpServer server;
     private final ArrayList<ContextPack> contextPacks;
-    private final boolean debug;
+    private HttpServer server;
 
     /**
-     * @param debug        Debugging
      * @param port         Webhook Port
      * @param contextPacks ContentPack ArrayList for Event Listeners
      */
-    public Webhook(boolean debug, int port, ArrayList<ContextPack> contextPacks) {
-        this.debug = debug;
+    public Webhook(int port, ArrayList<ContextPack> contextPacks) {
         this.port = port;
-
         this.contextPacks = contextPacks;
     }
 
@@ -36,21 +34,22 @@ public class Webhook {
     public final Webhook start() throws IOException {
 
         server = HttpServer.create(new InetSocketAddress(this.port), 0);
-        if (this.isDebug()) {
-            System.out.println("[DEBUG] Starting Webserver");
-        }
+
         contextPacks.forEach(contextPack -> {
             ListenerPack pack = contextPack.getListenerPack();
-            server.createContext("/" + contextPack.getContext(), new RequestHandler(this, pack, contextPack));
-            if (this.isDebug()) {
-                System.out.println("[DEBUG] Added /" + contextPack.getContext());
-            }
+            server.createContext("/" + contextPack.getContext(), new RequestHandler(pack));
         });
 
         System.out.println("Webhook started under " + server.getAddress().getHostString() + " on port " + server.getAddress().getPort() + " under the following context | listeners | authorization");
         contextPacks.forEach(contextPack -> {
             ListenerPack listenerPack = contextPack.getListenerPack();
-            System.out.println("> " + contextPack.getContext() + " - " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
+            if (listenerPack.getListener() instanceof GuildWebhookListener) {
+                System.out.println("> " + contextPack.getContext() + " - (GUILD) " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
+            } else if (listenerPack.getListener() instanceof BotWebhookListener) {
+                System.out.println("> " + contextPack.getContext() + " - (BOT) " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
+            } else {
+                System.out.println("severe warning, listener from " + listenerPack.getListener().getClass().getSimpleName() + " is not type of GuildWebhookListener/BotWebhookListener!");
+            }
 
         });
         server.start();
@@ -68,7 +67,4 @@ public class Webhook {
     }
 
 
-    public final boolean isDebug() {
-        return this.debug;
-    }
 }

@@ -15,4 +15,4 @@ dependencies {
 
 }
 
-mainClassName='me.hopedev.topggwebhooks.testrun.Main'
+mainClassName = 'me.hopedev.topggwebhooks.testrun.Main'

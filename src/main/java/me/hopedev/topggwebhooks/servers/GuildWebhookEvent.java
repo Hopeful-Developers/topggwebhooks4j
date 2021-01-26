@@ -11,8 +11,10 @@ public class GuildWebhookEvent {
     /**
      * Main constructor for the Webhook Event
      *
-     * @param requestString the full request body of the webhook
-     * @param listener      involved Webhook Handler
+     * @param requestString        the full request body of the webhook
+     * @param listener             involved Webhook Handler
+     * @param requestAuthorization Authorization from current Event
+     * @param contextAuthorization Authorization from associated context
      */
     public GuildWebhookEvent(String requestString, GuildWebhookListener listener, String requestAuthorization, String contextAuthorization) {
 
@@ -33,9 +35,6 @@ public class GuildWebhookEvent {
             this.isValid = true;
         } catch (Exception e) {
             this.isValid = false;
-            System.out.println("Invalid Request Data");
-            System.out.println(requestString);
-            System.out.println("This will cause errors if trying to parse.");
         }
     }
 
@@ -81,7 +80,7 @@ public class GuildWebhookEvent {
     /**
      * gets the used authorization by the request associated with this event
      *
-     * @return none when no Authorization header is available, otherwise returns Authorization
+     * @return none when no Authorization header is available, otherwise returns corresponding Authorization
      */
     public final String getRequestAuthorization() {
         return this.requestAuthorization;

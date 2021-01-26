@@ -1,5 +1,7 @@
 package me.hopedev.topggwebhooks.bots;
 
+import me.hopedev.topggwebhooks.enums.VotingType;
+import me.hopedev.topggwebhooks.utils.Query;
 import org.json.JSONObject;
 
 public class BotVoteData {
@@ -17,9 +19,9 @@ public class BotVoteData {
     }
 
     /**
-     * gets the User ID of the current vote
+     * gets the User ID of the current voter
      *
-     * @return Long containing the UserID of the voter
+     * @return Snowflake containing the UserID of the voter
      */
     public Long getUserID() {
         return this.data.getLong("user");
@@ -28,7 +30,7 @@ public class BotVoteData {
     /**
      * gets the ID of the Bot that was voted for
      *
-     * @return Long containing the ID of the voted bot
+     * @return Snowflake containing the ID of the voted guild
      */
     public Long getBotID() {
         return this.data.getLong("bot");
@@ -37,10 +39,11 @@ public class BotVoteData {
     /**
      * gets the type of vote that occured
      *
-     * @return String containing either "upvote" when it was a normal vote, "test" when it was a test vote through the "Test Webhook" button
+     * @return Enum VotingType either "UPVOTE" when it was a normal vote, "TEST" when it was a test vote through the "Test Webhook" button, INVALID when errored
      */
-    public String getType() {
-        return this.data.getString("type");
+    public VotingType getType() {
+        String type = this.data.getString("type");
+        return (type.equalsIgnoreCase("upvote") ? VotingType.UPVOTE : (type.equalsIgnoreCase("test") ? VotingType.TEST : VotingType.INVALID));
     }
 
     /**
@@ -56,9 +59,9 @@ public class BotVoteData {
      * gets the query of the vote page that was associated with the vote
      * Read the <a href="https://top.gg/api/docs#webhooks">top.gg api documentation</a> for more
      *
-     * @return String containing the query
+     * @return Query Object to be able to parse query values from (see documentation)
      */
-    public String getQuery() {
-        return this.data.getString("query");
+    public Query getQuery() {
+        return new Query(this.data.getString("query"));
     }
 }
