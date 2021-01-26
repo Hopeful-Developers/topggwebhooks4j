@@ -3,6 +3,8 @@
 
 This is a Library for creating Webhooks in Java
 
+**This Library supports both top.gg/bots, aswell as top.gg/servers. You can use it for both**
+
 **[How to use (Wiki)](https://github.com/Hopefuls/topggwebhooks4j/wiki)**
 
 **[Javadocs](https://hopefuls.github.io/topggwebhooks4j/)**
