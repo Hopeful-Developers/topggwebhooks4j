@@ -6,6 +6,8 @@ This is a Library for creating Webhooks in Java
 **[How to use (Wiki)](https://github.com/Hopefuls/topggwebhooks4j/wiki)**
 
 **[Javadocs](https://hopefuls.github.io/topggwebhooks4j/)**
+
+**[Example Usage in a Discord Bot](https://github.com/Hopefuls/LoggersBro-ExampleBot)**
 ## Quick-Start
 
 
