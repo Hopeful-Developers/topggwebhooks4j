@@ -3,9 +3,13 @@
 
 This is a Library for creating Webhooks in Java
 
+**This Library supports both top.gg/bots, aswell as top.gg/servers. You can use it for both**
+
 **[How to use (Wiki)](https://github.com/Hopefuls/topggwebhooks4j/wiki)**
 
 **[Javadocs](https://hopefuls.github.io/topggwebhooks4j/)**
+
+**[Example Usage in a Discord Bot](https://github.com/Hopefuls/LoggersBro-ExampleBot)**
 ## Quick-Start
 
 
@@ -16,7 +20,7 @@ maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-implementation 'com.github.Hopefuls:topggwebhooks4j:1.3.0'
+implementation 'com.github.Hopefuls:topggwebhooks4j:1.3.5'
 }
 
 ```
@@ -32,6 +36,6 @@ implementation 'com.github.Hopefuls:topggwebhooks4j:1.3.0'
 	<dependency>
 	    <groupId>com.github.Hopefuls</groupId>
 	    <artifactId>topggwebhooks4j</artifactId>
-	    <version>1.3.0</version>
+	    <version>1.3.5</version>
 	</dependency>
 ```
