@@ -17,8 +17,15 @@ public class Query {
         Map<String, String> result = new HashMap<>();
         Arrays.stream(this.query.split("&")).forEach(s -> {
             String[] split2 = s.split("=");
-            result.put(split2[0], split2[1]);
+            try {
+                result.put(split2[0], split2[1]);
+            } catch (Exception ignored) {
+                // if some fucky-wucky happens, just add none none
+                result.put("none", "none");
+            }
         });
+
+
         return result;
     }
 

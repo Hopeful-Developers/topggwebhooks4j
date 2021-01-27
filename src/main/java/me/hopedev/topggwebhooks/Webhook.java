@@ -12,18 +12,17 @@ public class Webhook {
 
 
     private final int port;
-    private final ArrayList<ContextPack> contextPacks;
+    private final ArrayList<PathCollection> pathCollections;
     private HttpServer server;
 
     /**
-     * @param port         Webhook Port
-     * @param contextPacks ContentPack ArrayList for Event Listeners
+     * @param port            Webhook Port
+     * @param pathCollections ContentPack ArrayList for Event Listeners
      */
-    public Webhook(int port, ArrayList<ContextPack> contextPacks) {
+    public Webhook(int port, ArrayList<PathCollection> pathCollections) {
         this.port = port;
-        this.contextPacks = contextPacks;
+        this.pathCollections = pathCollections;
     }
-
 
     /**
      * Starts the Webhook HttpServer
@@ -35,20 +34,20 @@ public class Webhook {
 
         server = HttpServer.create(new InetSocketAddress(this.port), 0);
 
-        contextPacks.forEach(contextPack -> {
-            ListenerPack pack = contextPack.getListenerPack();
-            server.createContext("/" + contextPack.getContext(), new RequestHandler(pack));
+        pathCollections.forEach(pathCollection -> {
+            ListenerCollection pack = pathCollection.getListenerCollection();
+            server.createContext(pathCollection.getContext(), new RequestHandler(pack));
         });
 
         System.out.println("Webhook started under " + server.getAddress().getHostString() + " on port " + server.getAddress().getPort() + " under the following context | listeners | authorization");
-        contextPacks.forEach(contextPack -> {
-            ListenerPack listenerPack = contextPack.getListenerPack();
-            if (listenerPack.getListener() instanceof GuildWebhookListener) {
-                System.out.println("> " + contextPack.getContext() + " - (GUILD) " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
-            } else if (listenerPack.getListener() instanceof BotWebhookListener) {
-                System.out.println("> " + contextPack.getContext() + " - (BOT) " + listenerPack.getListener().getClass().getSimpleName() + " - " + listenerPack.getAuthorization());
+        pathCollections.forEach(pathCollection -> {
+            ListenerCollection listenerCollection = pathCollection.getListenerCollection();
+            if (listenerCollection.getListener() instanceof GuildWebhookListener) {
+                System.out.println("> " + pathCollection.getContext() + " - (GUILD) " + listenerCollection.getListener().getClass().getSimpleName() + " - " + listenerCollection.getAuthorization());
+            } else if (listenerCollection.getListener() instanceof BotWebhookListener) {
+                System.out.println("> " + pathCollection.getContext() + " - (BOT) " + listenerCollection.getListener().getClass().getSimpleName() + " - " + listenerCollection.getAuthorization());
             } else {
-                System.out.println("severe warning, listener from " + listenerPack.getListener().getClass().getSimpleName() + " is not type of GuildWebhookListener/BotWebhookListener!");
+                System.out.println("severe warning, listener from " + listenerCollection.getListener().getClass().getSimpleName() + " is not type of GuildWebhookListener/BotWebhookListener!");
             }
 
         });
@@ -68,3 +67,5 @@ public class Webhook {
 
 
 }
+
+

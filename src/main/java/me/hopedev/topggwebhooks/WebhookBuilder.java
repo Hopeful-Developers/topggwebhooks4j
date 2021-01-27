@@ -10,9 +10,8 @@ import java.util.HashMap;
 
 public class WebhookBuilder {
 
-    private final HashMap<String /*url context*/, ListenerPack /*ListenerPack*/> listenerStorage = new HashMap<>();
+    private final HashMap<String /*url context*/, ListenerCollection /*ListenerPack*/> listenerStorage = new HashMap<>();
     private int port = 6969;
-
 
     /**
      * Constructor
@@ -33,13 +32,13 @@ public class WebhookBuilder {
         return this;
     }
 
-    public final WebhookBuilder addGuildListener(String context, GuildWebhookListener listener, String httpAuthorization, Options... options) {
-        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization, options));
+    public final WebhookBuilder addGuildListener(String webhookPath, GuildWebhookListener listener, String webhookAuth, Options... options) {
+        listenerStorage.put(webhookPath, new ListenerCollection(listener, webhookAuth, options));
         return this;
     }
 
-    public final WebhookBuilder addBotListener(String context, BotWebhookListener listener, String httpAuthorization, Options... options) {
-        listenerStorage.put(context, new ListenerPack(listener, httpAuthorization, options));
+    public final WebhookBuilder addBotListener(String webhookPath, BotWebhookListener listener, String webhookAuth, Options... options) {
+        listenerStorage.put(webhookPath, new ListenerCollection(listener, webhookAuth, options));
         return this;
     }
 
@@ -49,8 +48,8 @@ public class WebhookBuilder {
      * @return the built Webhook
      */
     public final Webhook build() {
-        ArrayList<ContextPack> packs = new ArrayList<>();
-        listenerStorage.forEach((s, o) -> packs.add(new ContextPack(s, o)));
+        ArrayList<PathCollection> packs = new ArrayList<>();
+        listenerStorage.forEach((s, o) -> packs.add(new PathCollection(s, o)));
         return new Webhook(this.port, packs);
     }
 

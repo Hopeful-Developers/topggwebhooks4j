@@ -16,10 +16,10 @@ import java.util.List;
 
 public class RequestHandler implements HttpHandler {
 
-    private final ListenerPack listenerPack;
+    private final ListenerCollection listenerCollection;
 
-    public RequestHandler(ListenerPack listenerPack) {
-        this.listenerPack = listenerPack;
+    public RequestHandler(ListenerCollection listenerCollection) {
+        this.listenerCollection = listenerCollection;
     }
 
     @Override
@@ -46,14 +46,14 @@ public class RequestHandler implements HttpHandler {
             // send earlier because everything needed was stored already
             resManager.setResponseCode(200).writeResponse("Received! Thank you :)");
 
-            Object listenerObject = this.listenerPack.getListener();
+            Object listenerObject = this.listenerCollection.getListener();
 
             if (listenerObject instanceof BotWebhookListener) {
                 BotWebhookListener listener = (BotWebhookListener) listenerObject;
 
-                BotWebhookEvent event = new BotWebhookEvent(dataString, listener, authorization, this.listenerPack.getAuthorization());
+                BotWebhookEvent event = new BotWebhookEvent(dataString, listener, authorization, this.listenerCollection.getAuthorization());
 
-                List<Options> optionsList = Arrays.asList(this.listenerPack.getOptions());
+                List<Options> optionsList = Arrays.asList(this.listenerCollection.getOptions());
 
                 // Exception purposes
                 currOptions = optionsList;
@@ -104,9 +104,9 @@ public class RequestHandler implements HttpHandler {
             } else if (listenerObject instanceof GuildWebhookListener) {
 
                 GuildWebhookListener listener = (GuildWebhookListener) listenerObject;
-                GuildWebhookEvent event = new GuildWebhookEvent(dataString, listener, authorization, this.listenerPack.getAuthorization());
+                GuildWebhookEvent event = new GuildWebhookEvent(dataString, listener, authorization, this.listenerCollection.getAuthorization());
 
-                List<Options> optionsList = Arrays.asList(this.listenerPack.getOptions());
+                List<Options> optionsList = Arrays.asList(this.listenerCollection.getOptions());
 
                 // Exception purposes
                 currOptions = optionsList;

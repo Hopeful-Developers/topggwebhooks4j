@@ -2,13 +2,13 @@ package me.hopedev.topggwebhooks;
 
 import me.hopedev.topggwebhooks.enums.Options;
 
-public class ListenerPack {
+public class ListenerCollection {
 
     private final Object listenerObject;
     private final String authorization;
     private final Options[] options;
 
-    public ListenerPack(Object listenerObject, String authorization, Options[] options) {
+    public ListenerCollection(Object listenerObject, String authorization, Options[] options) {
         this.listenerObject = listenerObject;
         this.authorization = authorization;
         this.options = options;

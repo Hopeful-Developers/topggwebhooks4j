@@ -11,5 +11,6 @@ package me.hopedev.topggwebhooks.enums;
 public enum Options {
     IGNORE_VALIDATION,
     IGNORE_AUTHORIZATION,
-    ONLY_LISTEN_FOR_TEST_VOTES
+    ONLY_LISTEN_FOR_TEST_VOTES,
+
 }

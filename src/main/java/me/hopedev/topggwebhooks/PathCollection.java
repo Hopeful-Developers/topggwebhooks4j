@@ -4,29 +4,29 @@ import me.hopedev.topggwebhooks.bots.BotWebhookListener;
 import me.hopedev.topggwebhooks.enums.ListenerType;
 import me.hopedev.topggwebhooks.servers.GuildWebhookListener;
 
-public class ContextPack {
+public class PathCollection {
 
     private final String context;
-    private final ListenerPack listenerPack;
+    private final ListenerCollection listenerCollection;
 
 
-    public ContextPack(String context, ListenerPack listenerPack) {
+    public PathCollection(String context, ListenerCollection listenerCollection) {
         this.context = context;
-        this.listenerPack = listenerPack;
+        this.listenerCollection = listenerCollection;
     }
 
     public String getContext() {
         return this.context;
     }
 
-    public ListenerPack getListenerPack() {
-        return this.listenerPack;
+    public ListenerCollection getListenerCollection() {
+        return this.listenerCollection;
     }
 
     public ListenerType getListenerType() {
-        if (this.getListenerPack().getListener() instanceof BotWebhookListener) {
+        if (this.getListenerCollection().getListener() instanceof BotWebhookListener) {
             return ListenerType.BOT;
-        } else if (this.getListenerPack().getListener() instanceof GuildWebhookListener) {
+        } else if (this.getListenerCollection().getListener() instanceof GuildWebhookListener) {
             return ListenerType.GUILD;
         } else {
             return ListenerType.UNKNOWN;
